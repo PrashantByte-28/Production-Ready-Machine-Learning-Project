@@ -4,6 +4,7 @@
 - Vs code: https://code.visualstudio.com/
 - Git: https://git-scm.com/
 - MLOps Tool: https://www.evidentlyai.com/
+- MongoDB: https://www.mongodb.com/
 
 
 
