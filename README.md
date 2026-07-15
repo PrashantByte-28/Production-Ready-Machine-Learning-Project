@@ -5,6 +5,7 @@
 - Git: https://git-scm.com/
 - MLOps Tool: https://www.evidentlyai.com/
 - MongoDB: https://www.mongodb.com/
+- Data Link: https://www.kaggle.com/datasets/moro23/easyvisa-dataset/data
 
 
 
