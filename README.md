@@ -41,12 +41,3 @@ pip install -r requirements.txt
 4. pipeline
 5. Main File
 
-
-
-### Export the environmental variable
-```bash
-
-
-export MONGODB_URL="mongodb+srv://<username>:<password>...."
-
-```
