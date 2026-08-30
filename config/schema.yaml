@@ -53,7 +53,7 @@ or_columns:   # ordinal encoding columns
 oh_columns:   # One hot encoding columns
   - continent
   - unit_of_wage
-  - region_of_employement
+  - region_of_employment
 
 
 transform_columns:
