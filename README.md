@@ -1,242 +1,125 @@
-# MLOps Production-Ready Machine Learning Project
+# VisaSight — MLOps Pipeline for US Visa Approval Prediction
 
-A production-ready machine learning project demonstrating an end-to-end MLOps workflow, including data management, model development, MongoDB integration, AWS deployment, Docker, ECR, EC2, and GitHub Actions.
+This is a machine learning project I built to predict whether a US work visa
+petition is likely to get approved or denied, based on things like the
+employee's education, job experience, wage, and the employer's company size.
 
----
+I didn't want to just train a model in a notebook and leave it there, so I
+built this as a full pipeline — data ingestion, validation, transformation,
+training, evaluation — and then wrapped it in a FastAPI app so you can
+actually fill out a form and get a live prediction. It's also deployed with
+Docker on AWS EC2, with GitHub Actions handling the CI/CD.
 
-## 🛠️ Tools & Resources
+Dataset used: [EasyVisa dataset on Kaggle](https://www.kaggle.com/datasets/moro23/easyvisa-dataset)
 
-| Tool       | Link                                                    |
-| ---------- | ------------------------------------------------------- |
-| Anaconda   | https://www.anaconda.com/                               |
-| VS Code    | https://code.visualstudio.com/download                  |
-| Git        | https://git-scm.com/                                    |
-| Flowchart  | https://whimsical.com/                                  |
-| MLOps Tool | https://www.evidentlyai.com/                            |
-| MongoDB    | https://account.mongodb.com/account/login               |
-| Dataset    | https://www.kaggle.com/datasets/moro23/easyvisa-dataset |
+## What it does
 
----
+You fill out a short form (continent, education, experience, wage, company
+size, etc.) and the model tells you whether it thinks the petition would be
+approved or not. Models used are XGBoost and CatBoost — I tried a few things
+and these gave the best results on this dataset.
 
-## 📂 Project Workflow
+For monitoring, I added Evidently AI so I could check for data drift later
+on, since that's something that gets skipped a lot in smaller projects but
+matters in a real setup.
 
-The project follows the following workflow:
+## Stack
 
-1. **Constants**
-2. **Entity**
-3. **Components**
-4. **Pipeline**
-5. **Main File**
+- Python 3.8
+- Scikit-learn, XGBoost, CatBoost
+- MongoDB (for storing the raw data)
+- FastAPI + Jinja2 for the web app
+- Docker
+- AWS EC2 + ECR
+- GitHub Actions (self-hosted runner on the EC2 instance)
 
----
+## How the pipeline is structured
 
-## 🔀 Git Commands
+I followed a fairly standard modular structure so each part can be tested
+and run on its own:
 
-Use the following commands to add, commit, and push changes to the repository:
-
-```bash
-git add .
-
-git commit -m "Updated"
-
-git push origin main
+```
+constants -> entity -> components -> pipeline -> app.py
 ```
 
----
+- **constants** – fixed config stuff (paths, DB names, thresholds)
+- **entity** – config/artifact classes passed between stages
+- **components** – ingestion, validation, transformation, training, evaluation
+- **pipeline** – wires the components together (training pipeline + prediction pipeline)
+- **app.py** – FastAPI app that loads the trained model and serves predictions
 
-# 🚀 How to Run?
-
-## 1. Create Conda Environment
+## Running it locally
 
 ```bash
+git clone https://github.com/PrashantByte-28/VisaSight.git
+cd VisaSight
+# (repo renamed from Production-Ready-Machine-Learning-Project)
+
 conda create -n visa python=3.8 -y
-```
-
-## 2. Activate Conda Environment
-
-```bash
 conda activate visa
-```
-
-## 3. Install Dependencies
-
-```bash
 pip install -r requirements.txt
 ```
 
----
-
-# 🔐 Export Environment Variables
-
-Set the required environment variables before running the project.
+You'll need a MongoDB connection string and AWS keys set as environment
+variables before running anything:
 
 ```bash
-export MONGODB_URL="mongodb+srv://<username>:<password>...."
-
-export AWS_ACCESS_KEY_ID=<AWS_ACCESS_KEY_ID>
-
-export AWS_SECRET_ACCESS_KEY=<AWS_SECRET_ACCESS_KEY>
+export MONGODB_URL="mongodb+srv://<username>:<password>@..."
+export AWS_ACCESS_KEY_ID=<your_key>
+export AWS_SECRET_ACCESS_KEY=<your_secret>
 ```
 
----
-
-# ☁️ AWS CI/CD Deployment with GitHub Actions
-
-This section describes the deployment process using AWS, Docker, Amazon ECR, Amazon EC2, and GitHub Actions.
-
----
-
-## 1. Login to AWS Console
-
-Login to the AWS Console.
-
----
-
-## 2. Create IAM User for Deployment
-
-Create an IAM user with the required permissions for deployment.
-
-### Required Access
+Train the model:
 
 ```bash
-1. EC2 access : It is virtual machine
-
-2. ECR: Elastic Container registry to save your docker image in aws
+python demo.py
 ```
 
-### Deployment Process
+Then run the app:
 
 ```bash
-1. Build docker image of the source code
-
-2. Push your docker image to ECR
-
-3. Launch Your EC2
-
-4. Pull Your image from ECR in EC2
-
-5. Lauch your docker image in EC2
+python app.py
 ```
 
-### Required Policies
+and go to `localhost:8080` in your browser.
 
-```bash
-1. AmazonEC2ContainerRegistryFullAccess
+## Deployment
 
-2. AmazonEC2FullAccess
+This part took me the longest to get right, honestly. The flow is:
+
+```
+push to GitHub -> GitHub Actions builds a Docker image
+-> pushes it to ECR -> EC2 pulls the image -> restarts the container
 ```
 
----
+Steps I followed to set it up:
 
-## 3. Create ECR Repository
+1. Created an IAM user with `AmazonEC2ContainerRegistryFullAccess` and `AmazonEC2FullAccess`
+2. Created an ECR repo to hold the image
+3. Spun up an EC2 instance (Ubuntu) and installed Docker on it:
+   ```bash
+   sudo apt-get update -y && sudo apt-get upgrade -y
+   curl -fsSL https://get.docker.com -o get-docker.sh
+   sudo sh get-docker.sh
+   sudo usermod -aG docker ubuntu
+   newgrp docker
+   ```
+4. Registered that same EC2 instance as a self-hosted GitHub Actions runner
+   (Settings → Actions → Runners → New self-hosted runner)
+5. Added these as repo secrets: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`,
+   `AWS_DEFAULT_REGION`, `ECR_REPO`
 
-Create an ECR repository to store/save the Docker image.
+After that, every push to `main` rebuilds and redeploys automatically —
+no manual steps.
 
-### ECR Repository URI
+## Things I'd still like to improve
 
-Save the following URI:
+- Add proper unit tests for the pipeline components (currently none, which I know isn't great)
+- Track experiments with MLflow instead of just comparing metrics manually
+- Handle edge cases in the form better on the frontend
+- Set up scheduled drift checks instead of only checking manually
 
-```bash
-891376917319.dkr.ecr.ap-south-1.amazonaws.com/visa
-```
+## Author
 
----
-
-## 4. Create EC2 Machine
-
-Create an **EC2 machine using Ubuntu**.
-
----
-
-## 5. Open EC2 and Install Docker
-
-### Optional
-
-```bash
-sudo apt-get update -y
-
-sudo apt-get upgrade
-```
-
-### Required
-
-```bash
-curl -fsSL https://get.docker.com -o get-docker.sh
-
-sudo sh get-docker.sh
-
-sudo usermod -aG docker ubuntu
-
-newgrp docker
-```
-
----
-
-## 6. Configure EC2 as Self-Hosted Runner
-
-Go to:
-
-```text
-Settings > Actions > Runner > New self hosted runner
-```
-
-Choose the appropriate operating system and then run the commands one by one on the EC2 machine.
-
----
-
-## 7. Setup GitHub Secrets
-
-Add the following secrets to your GitHub repository:
-
-```bash
-AWS_ACCESS_KEY_ID
-AWS_SECRET_ACCESS_KEY
-AWS_DEFAULT_REGION
-ECR_REPO
-```
-
----
-
-# 🔄 Deployment Workflow
-
-```text
-Source Code
-     |
-     v
-GitHub Repository
-     |
-     v
-GitHub Actions
-     |
-     v
-Build Docker Image
-     |
-     v
-Push Docker Image to ECR
-     |
-     v
-Amazon EC2
-     |
-     v
-Pull Image from ECR
-     |
-     v
-Run Docker Container
-```
-
----
-
-# 📌 Project Summary
-
-This project demonstrates a complete production-oriented machine learning workflow, including:
-
-* Machine Learning project structure
-* MongoDB integration
-* MLOps workflow
-* Docker containerization
-* Amazon ECR for Docker image storage
-* Amazon EC2 for deployment
-* GitHub Actions for CI/CD
-* GitHub Actions self-hosted runner
-* AWS IAM permissions
-* Environment variable configuration
+Prashant Kumar Mishra
+[GitHub](https://github.com/PrashantByte-28) · [LinkedIn](https://www.linkedin.com/in/prashant-kumar-mishra-356004261)
