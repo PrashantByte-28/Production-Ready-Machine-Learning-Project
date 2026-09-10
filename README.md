@@ -10,7 +10,16 @@ training, evaluation — and then wrapped it in a FastAPI app so you can
 actually fill out a form and get a live prediction. It's also deployed with
 Docker on AWS EC2, with GitHub Actions handling the CI/CD.
 
-Dataset used: [EasyVisa dataset on Kaggle](https://www.kaggle.com/datasets/moro23/easyvisa-dataset)
+Dataset used: [EasyVisa dataset on Kaggle]
+
+## Live Demo
+
+You can access the deployed FastAPI application here:
+[http://13.205.6.187:8080/]
+
+This IP is a static Elastic IP, so the link stays the same across
+restarts — but the app will only be reachable while the EC2 instance
+is actually running.
 
 ## What it does
 
