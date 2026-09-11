@@ -3,372 +3,211 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>VisaSight | US Visa Approval Prediction</title>
+    <title>US Visa Prediction</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css')}}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
   </head>
   <body>
-    <nav class="navbar navbar-light static-top">
+    <nav class="navbar navbar-light bg-light static-top">
         <div class="container-fluid">
-           <span class="navbar-brand">🛂 VisaSight</span>
-           <span class="nav-tag">ML-Powered Approval Forecast</span>
+           <!-- <a class="navbar-brand" href="https://ineuron.ai"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIkAAAAlCAMAAABBJDpuAAAAVFBMVEX/fgD/iQA7NzIyMjMnNYInNYEnNYInNYEzMzInNYQnNYETJzsnNYIwN1wxMjNoTis4O1YrNm0xOF47PE9DP0dEQEVpTVkAJJ4nNYEOLJHJbiAzMzOmmmHRAAAAFnRSTlOh/vu+986oen9fP2UqEzQkFAIDAAEEILVBJQAAA3FJREFUWMPNmO2WoyAMQG0VBARtdVRs3/89NwkgaF1rd2aOm18tIrnkgwSz7n+R7LcV1ELkeS7E7VySRlyfQXJhTiO55c+liP4cEuH1X8E7gaV+S3Jv2zYZ/Vr+/Sdx2vP6doc/fSPcf/GOpLSFVXFUW8t+giRP47TOd60yk1hbxIhSP0ACKPWrvw7YBIT/lcQY84G3Wk17ugWQfg5UsQJpjflKSLQi7xTWyk0SXTJ4VnB5D1yccxmp4Z+mX5KGNS+SPXVNll0ulyxL0wYmloBB6zL/MpCoAgjAJiUM6w0SboMwPUdRogvNKcNM3smFdRvEcJJkKcflQa+X0pNIfBGW0zKqjyQtw4VLKQlI7ZLgdrRNSZDjMQx2GB4pCkxkCrfGWUTJ0Egan6muCHgJCUwtnCk0mrJ9Q8K5LUqtdSfynkAedhynaRqngVDaXLiJEAzkFkM71IuIlWRYtSQpbXSZDvQ7JPCei9brs+oaABkn74LRIkpFaVxGnzjvIxTYREOoEwn5r01JTDRTcO87Eu3zNUeTPKZpjrIRrNIDCjzALbPk7LJMIokOEQu2K7yKQAKvFDF9pVe0R+LGb7h1MMkw2ijjA/1zhSfSphvEAChXJEhAqwYStIJWXnTpvbdH4hTUwSQ2JRmQpILDLYbB7J41SYiLcNozu5Z3JMo7RxBJahI7WSRByCMkqJt9hySESbVJcvmARJGFExJmdBSl2oM2+T4JLWfgaGFptizlPUm1FydHSdyZ7UnS4ySph2kS0kJrkvr5NJg7dnrJnfxgxPozRPGtkyPNOxtaiDvbIAF9L+5B5zTI2BwlwXmM+U3zReav3o0F8oUEFFZ42McDZYomOUziFmezgWyo251Uc1nyKJol7URCEvIYUEbHYaEGQi9C9egwCdVfHwiaajfjKMUcHcRacCylhWJbJDfq47EEDhYqoIWjHnwDXZPpPiChPQelLU+Cbm4w50FmYgkvFwpiWwCC/Um/SLcNElOC9RVj6qWpCiEMvRUK4zLpdKmPw8rVldy/qxjn60wLrVLWJIPLiZJRr3fsvnOHPvare+lB93tb37T20D82jqOt+zNuXhuNvNhp7X+PpHb3rvV9R5xjE2SpyCN9ffQO+GtWIZr5Xnytz4gTMIRYfys47/uJEXny/aQ/95tSUwmU+uRvSp/IHzQqZYpYrQmxAAAAAElFTkSuQmCC" /></a> -->
         </div>
-    </nav>
+     </nav>
 
     <section class="hero">
-        <div class="hero-content">
-            <h1 class="hero-title">VisaSight</h1>
-            <p class="hero-sub">Fill in the details below to predict your US visa approval status</p>
-        </div>
+        <h1>US Visa Prediction</h1>
+        <p class="hero-sub">An employment-visa outcome estimate, built from your case details.</p>
     </section>
 
-    <section class="form-section">
-        <div class="container">
-            <!-- Progress bar -->
-            <div class="progress-wrap">
-                <div class="progress-label"><span id="progressText">0</span>% complete</div>
-                <div class="progress-track">
-                    <div class="progress-fill" id="progressFill"></div>
+    <section>
+        <div class="container-fluid">
+            <div class="container">
+
+                <!-- Live completion tracker (display only, reads existing fields, changes nothing about them) -->
+                <div class="tracker" aria-hidden="true">
+                    <div class="tracker-track"><div class="tracker-fill" id="trackerFill"></div></div>
+                    <span class="tracker-label"><span id="trackerCount">0</span>/8 fields complete</span>
+                </div>
+
+                <div class="formBox">
+                    <p class="card-kicker">Application form</p>
+                    <form action="/" method="post">
+                        <legend>US Visa approval Form</legend>
+
+                        <p class="section-tab">Applicant</p>
+                        <div class="field-grid">
+                            <div class="inputBox">
+                                <select class="form-control input" id="continent" name="continent" placeholder="Continent" required="required">
+                                  <option value="" disabled selected>Select Continent</option>
+                                  <option>Asia</option>
+                                  <option>Africa</option>
+                                  <option>North America</option>
+                                  <option>Europe</option>
+                                  <option>South America</option>
+                                  <option>Oceania</option>
+                                </select>
+                                <label for="continent" class="inputText">Continent</label>
+                              </div>
+
+                              <div class="inputBox">
+                                <select class="form-control input" id="education_of_employee" name="education_of_employee" placeholder="Education" required="required">
+                                    <option value="" disabled selected>Select Education</option>
+                                    <option>High School</option>
+                                    <option>Master's</option>
+                                    <option>Bachelor's</option>
+                                    <option>Doctorate</option>
+                                </select>
+                                <label for="education_of_employee" class="inputText">Education of employee</label>
+                              </div>
+                        </div>
+
+                        <p class="section-tab">Employment</p>
+                        <div class="field-grid">
+                              <div class="inputBox">
+                                <select class="form-control input" id="has_job_experience" name="has_job_experience" placeholder="Has Experience" required="required">
+                                    <option value="" disabled selected>Has Experience</option>
+                                    <option>N</option>
+                                    <option>Y</option>
+                                </select>
+                                <label for="has_job_experience" class="inputText">Has job experience</label>
+                              </div>
+
+                              <div class="inputBox">
+                                <select class="form-control input" id="requires_job_training" name="requires_job_training" placeholder="Training required" required="required">
+                                    <option value="" disabled selected>Required Training</option>
+                                    <option>N</option>
+                                    <option>Y</option>
+                                </select>
+                                <label for="requires_job_training" class="inputText">Requires job training</label>
+                              </div>
+
+                              <div class="inputBox">
+                                <input type="number" class="form-control input range-fill" id="no_of_employees" name="no_of_employees" min="14500" max="40000" placeholder=" " required="required">
+                                <label for="no_of_employees" class="inputText">Number of employees <span class="hint">(15,000&ndash;40,000)</span></label>
+                              </div>
+
+                              <div class="inputBox">
+                                <select class="form-control input" id="region_of_employment" name="region_of_employment" placeholder="Region" required="required">
+                                  <option value="" disabled selected>Region</option>
+                                  <option>West</option>
+                                  <option>Northeast</option>
+                                  <option>South</option>
+                                  <option>Midwest</option>
+                                  <option>Island</option>
+                                </select>
+                                <label for="region_of_employment" class="inputText">Region of employment</label>
+                              </div>
+                        </div>
+
+                        <p class="section-tab">Compensation</p>
+                        <div class="field-grid">
+                              <div class="inputBox">
+                                <input type="number" class="form-control input range-fill" id="prevailing_wage" name="prevailing_wage" min="600" max="70000" placeholder=" " required="required">
+                                <label for="prevailing_wage" class="inputText">Prevailing wage <span class="hint">(700&ndash;7,000)</span></label>
+                              </div>
+
+                              <div class="inputBox">
+                                <select class="form-control input" id="unit_of_wage" name="unit_of_wage" placeholder="Contract tenure" required="required">
+                                    <option value="" disabled selected>Contract Tenure</option>
+                                    <option>Hour</option>
+                                    <option>Year</option>
+                                    <option>Week</option>
+                                    <option>Month</option>
+                                </select>
+                                <label for="unit_of_wage" class="inputText">Contract tenure</label>
+                              </div>
+
+                              <div class="inputBox">
+                                <select class="form-control input" id="full_time_position" name="full_time_position" placeholder="Full Time" required="required">
+                                    <option value="" disabled selected>Full Time</option>
+                                    <option>Y</option>
+                                    <option>N</option>
+                                </select>
+                                <label for="full_time_position" class="inputText">Full or part time</label>
+                              </div>
+
+                              <div class="inputBox">
+                                <input type="number" class="form-control input range-fill" id="company_age" name="company_age" min="15" max="180" placeholder=" " required="required">
+                                <label for="company_age" class="inputText">Age of the company <span class="hint">(10&ndash;180 yrs)</span></label>
+                              </div>
+                        </div>
+
+                        <input class="btn btn-primary button stamp-btn" type="submit" value="Predict Visa Status" required />
+
+                    </form>
                 </div>
             </div>
 
-            <div class="shadow-box">
-            <form action="/" method="post" id="visaForm">
-
-                <!-- Card 1: Employee Profile -->
-                <div class="form-card" data-card="1">
-                    <div class="card-header">
-                        <span class="card-icon">🎓</span>
-                        <h3>Employee Profile</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="mb-3 field-group">
-                            <label for="continent">Continent</label>
-                            <select class="form-control" id="continent" name="continent" required="required">
-                              <option value="" disabled selected>Select Continent</option>
-                              <option>Asia</option>
-                              <option>Africa</option>
-                              <option>North America</option>
-                              <option>Europe</option>
-                              <option>South America</option>
-                              <option>Oceania</option>
-                            </select>
-                        </div>
-
-                        <div class="mb-3 field-group">
-                            <label for="education_of_employee">Education of employee</label>
-                            <select class="form-control" id="education_of_employee" name="education_of_employee" required="required">
-                                <option value="" disabled selected>Select Education</option>
-                                <option>High School</option>
-                                <option>Master's</option>
-                                <option>Bachelor's</option>
-                                <option>Doctorate</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 2: Job Details -->
-                <div class="form-card" data-card="2">
-                    <div class="card-header">
-                        <span class="card-icon">💼</span>
-                        <h3>Job Details</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="mb-3 field-group toggle-group">
-                            <label for="has_job_experience">Has Job Experience</label>
-                            <select class="form-control toggle-select" id="has_job_experience" name="has_job_experience" required="required">
-                                <option value="" disabled selected>Has Experience</option>
-                                <option>N</option>
-                                <option>Y</option>
-                            </select>
-                        </div>
-
-                        <div class="mb-3 field-group toggle-group">
-                            <label for="requires_job_training">Requires Job Training</label>
-                            <select class="form-control toggle-select" id="requires_job_training" name="requires_job_training" required="required">
-                                <option value="" disabled selected>Required Training</option>
-                                <option>N</option>
-                                <option>Y</option>
-                            </select>
-                        </div>
-
-                        <div class="mb-3 field-group">
-                            <label for="no_of_employees">Number of Employees</label>
-                            <input type="number" class="form-control" id="no_of_employees" name="no_of_employees" min="14500" max="40000" placeholder="select between 15000 to 40000" required="required">
-                            <input type="range" class="range-sync" id="range_employees" min="14500" max="40000" step="100" value="14500">
-                        </div>
-
-                        <div class="mb-3 field-group">
-                            <label for="region_of_employment">Select Region</label>
-                            <select class="form-control" id="region_of_employment" name="region_of_employment" required="required">
-                              <option value="" disabled selected>Region</option>
-                              <option>West</option>
-                              <option>Northeast</option>
-                              <option>South</option>
-                              <option>Midwest</option>
-                              <option>Island</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 3: Wage & Position -->
-                <div class="form-card" data-card="3">
-                    <div class="card-header">
-                        <span class="card-icon">💵</span>
-                        <h3>Wage &amp; Position</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="mb-3 field-group">
-                            <label for="prevailing_wage">Prevailing Wage</label>
-                            <input type="number" class="form-control" id="prevailing_wage" name="prevailing_wage" min="600" max="70000" placeholder="select between 700 to 7000" required="required">
-                            <input type="range" class="range-sync" id="range_wage" min="600" max="70000" step="100" value="600">
-                        </div>
-
-                        <div class="mb-3 field-group">
-                            <label for="unit_of_wage">Contract Tenure</label>
-                            <select class="form-control" id="unit_of_wage" name="unit_of_wage" required="required">
-                                <option value="" disabled selected>Contract Tenure</option>
-                                <option>Hour</option>
-                                <option>Year</option>
-                                <option>Week</option>
-                                <option>Month</option>
-                            </select>
-                        </div>
-
-                        <div class="mb-3 field-group toggle-group">
-                            <label for="full_time_position">Full or Part Time</label>
-                            <select class="form-control toggle-select" id="full_time_position" name="full_time_position" required="required">
-                                <option value="" disabled selected>Full Time</option>
-                                <option>Y</option>
-                                <option>N</option>
-                            </select>
-                        </div>
-
-                        <div class="mb-3 field-group">
-                            <label for="company_age">Age of the company</label>
-                            <input type="number" class="form-control" id="company_age" name="company_age" min="15" max="180" placeholder="select between 10 to 180" required="required">
-                            <input type="range" class="range-sync" id="range_age" min="15" max="180" step="1" value="15">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="submit-wrap">
-                    <button class="btn-submit" type="submit" id="predictBtn">
-                        <span class="btn-text">Predict Visa Status</span>
-                        <span class="btn-spinner"></span>
-                    </button>
-                </div>
-            </form>
-            </div><!-- /shadow-box -->
-
-            <div class="result-banner {{ 'result-show' if context else '' }}">
-                <h2 class="result-title">Visa Prediction Status:</h2>
-                <span class="result-value">{{context}}</span>
+            <div class="result-wrap text-center text-black">
+                <h2 class="display-4 fw-bolder">Visa Prediction Status: <span id="resultValue">{{context}}</span></h2>
             </div>
         </div>
     </section>
-
-    <!-- ===== Result Popup Modal ===== -->
-    <div class="popup-overlay" id="popupOverlay">
-        <canvas id="confettiCanvas"></canvas>
-        <div class="popup-card" id="popupCard">
-            <button class="popup-close" id="popupClose">&times;</button>
-            <div class="popup-icon" id="popupIcon"></div>
-            <h2 class="popup-title" id="popupTitle"></h2>
-            <p class="popup-message" id="popupMessage"></p>
-            <button class="popup-btn" id="popupOkBtn">OK</button>
-        </div>
-    </div>
-
-    <footer class="footer">
-        <p>VisaSight &middot; Powered by Machine Learning</p>
-    </footer>
 
     <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
     <script type="text/javascript">
-        // --- Range sliders sync with number inputs ---
-        function syncRange(numId, rangeId) {
-            var num = document.getElementById(numId);
-            var range = document.getElementById(rangeId);
-            if (!num || !range) return;
-            range.addEventListener('input', function(){ num.value = range.value; });
-            num.addEventListener('input', function(){
-                var v = parseFloat(num.value);
-                if (!isNaN(v)) range.value = v;
-            });
-        }
-        syncRange('no_of_employees', 'range_employees');
-        syncRange('prevailing_wage', 'range_wage');
-        syncRange('company_age', 'range_age');
-
-        // --- Progress bar ---
-        var fields = $('#visaForm select, #visaForm input[type=number]');
-        var total = fields.length;
-
-        function updateProgress(){
-            var filled = 0;
-            fields.each(function(){
-                var v = $(this).val();
-                if (v !== '' && v !== null) filled++;
-            });
-            var pct = Math.round((filled / total) * 100);
-            $('#progressFill').css('width', pct + '%');
-            $('#progressText').text(pct);
-        }
-        fields.on('change input', updateProgress);
-
-        // --- Card entrance animation on scroll ---
-        function revealCards(){
-            $('.form-card').each(function(i){
-                var card = $(this);
-                var top = card.offset().top;
-                var bottom = top + card.outerHeight();
-                var winTop = $(window).scrollTop();
-                var winBottom = winTop + $(window).height();
-                if (bottom > winTop && top < winBottom - 80){
-                    setTimeout(function(){ card.addClass('card-visible'); }, i * 150);
-                }
-            });
-        }
-        $(window).on('scroll', revealCards);
-        $(document).ready(function(){ revealCards(); updateProgress(); });
-
-        // --- Submit loading state ---
-        $('#visaForm').on('submit', function(){
-            $('#predictBtn').addClass('loading').prop('disabled', true);
-            // Set a flag so popup shows only after a fresh form submit, not on reload
-            sessionStorage.setItem('formJustSubmitted', 'true');
-        });
-
-        // --- Legacy focus effect (preserved) ---
         $(".input").focus(function(){
             $(this).parent().addClass("focus");
         }).blur(function(){
             if($(this).val() === ''){
                 $(this).parent().removeClass("focus");
             }
-        });
+        })
+    </script>
 
-        // ===== Result Popup =====
-        var visaContext = "{{ context }}".trim();
+    <!-- Additional presentation-only interactivity. Does not touch field names, values, or form submission. -->
+    <script type="text/javascript">
+        (function(){
+            // Pre-select the "focus" state for any field that already has a value
+            // (e.g. browser autofill on reload), so its label stays floated correctly.
+            $(".input").each(function(){
+                if ($(this).val() !== '') { $(this).parent().addClass("focus"); }
+            });
 
-        function showPopup(result){
-            var overlay  = document.getElementById('popupOverlay');
-            var card     = document.getElementById('popupCard');
-            var icon     = document.getElementById('popupIcon');
-            var title    = document.getElementById('popupTitle');
-            var message  = document.getElementById('popupMessage');
-            var okBtn    = document.getElementById('popupOkBtn');
+            // --- Live completion tracker ---
+            var fields = $("#continent, #education_of_employee, #has_job_experience, #requires_job_training, #no_of_employees, #region_of_employment, #prevailing_wage, #unit_of_wage, #full_time_position, #company_age");
+            var total = fields.length;
 
-            var isDenied = /not.?approv|denied|reject/i.test(result);
-            var isApproved = !isDenied && /approve|certified|grant/i.test(result);
-
-            if (isApproved){
-                card.classList.add('popup-approved');
-                card.classList.remove('popup-denied');
-                icon.textContent = '🎉';
-                title.textContent = 'Congratulations!';
-                message.textContent = 'Your visa application has been approved. Get ready for your new journey!';
-                okBtn.classList.add('btn-approved');
-                okBtn.classList.remove('btn-denied');
-                launchConfetti();
-            } else {
-                card.classList.add('popup-denied');
-                card.classList.remove('popup-approved');
-                icon.textContent = '😔';
-                title.textContent = 'Better Luck Next Time!';
-                message.textContent = 'Unfortunately, the visa was not approved this time. Don\'t give up — try again!';
-                okBtn.classList.add('btn-denied');
-                okBtn.classList.remove('btn-approved');
-            }
-
-            overlay.classList.add('popup-show');
-        }
-
-        function closePopup(){
-            document.getElementById('popupOverlay').classList.remove('popup-show');
-            stopConfetti();
-        }
-
-        document.getElementById('popupClose').addEventListener('click', closePopup);
-        document.getElementById('popupOkBtn').addEventListener('click', closePopup);
-        document.getElementById('popupOverlay').addEventListener('click', function(e){
-            if (e.target === this) closePopup();
-        });
-
-        // Trigger popup ONLY after a fresh form submission (not on F5/page reload)
-        // sessionStorage flag is set on form submit, then consumed immediately so reloads don't re-trigger
-        var justSubmitted = sessionStorage.getItem('formJustSubmitted');
-        if (justSubmitted === 'true'){
-            sessionStorage.removeItem('formJustSubmitted');
-            if (visaContext && visaContext !== '' && visaContext !== 'None'){
-                $(document).ready(function(){
-                    setTimeout(function(){ showPopup(visaContext); }, 600);
+            function updateTracker(){
+                var filled = 0;
+                fields.each(function(){
+                    var v = $(this).val();
+                    if (v !== '' && v !== null && v !== undefined) filled++;
                 });
+                $("#trackerCount").text(filled);
+                $("#trackerFill").css('width', (filled / total * 100) + '%');
             }
-        }
+            fields.on('change input', updateTracker);
+            updateTracker();
 
-        // ===== Confetti Engine =====
-        var confettiCanvas, confettiCtx, confettiPieces = [], confettiAnim = null;
+            // --- Subtle fill indicator on ranged number inputs ---
+            $(".range-fill").each(function(){
+                var el = $(this);
+                var min = parseFloat(el.attr('min'));
+                var max = parseFloat(el.attr('max'));
+                function paint(){
+                    var v = parseFloat(el.val());
+                    var pct = isNaN(v) ? 0 : Math.min(100, Math.max(0, (v - min) / (max - min) * 100));
+                    el.css('--fill', pct + '%');
+                }
+                el.on('input', paint);
+                paint();
+            });
 
-        function initConfettiCanvas(){
-            confettiCanvas = document.getElementById('confettiCanvas');
-            confettiCanvas.width  = window.innerWidth;
-            confettiCanvas.height = window.innerHeight;
-            confettiCtx = confettiCanvas.getContext('2d');
-        }
-
-        function launchConfetti(){
-            initConfettiCanvas();
-            var colors = ['#1a73e8','#00bcd4','#4caf50','#ffd700','#ff5722','#e91e63','#9c27b0'];
-            confettiPieces = [];
-            for (var i = 0; i < 150; i++){
-                confettiPieces.push({
-                    x: Math.random() * confettiCanvas.width,
-                    y: Math.random() * -confettiCanvas.height,
-                    w: 8 + Math.random() * 6,
-                    h: 8 + Math.random() * 6,
-                    color: colors[Math.floor(Math.random() * colors.length)],
-                    vy: 2 + Math.random() * 4,
-                    vx: -2 + Math.random() * 4,
-                    rot: Math.random() * 360,
-                    vrot: -5 + Math.random() * 10
-                });
+            // --- Stamp-in animation for a real result, once the page has loaded ---
+            var resultText = $("#resultValue").text().trim();
+            if (resultText !== '' && resultText.indexOf('{{') === -1) {
+                $(".result-wrap").addClass("has-result");
             }
-            animateConfetti();
-        }
 
-        function animateConfetti(){
-            confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
-            for (var i = 0; i < confettiPieces.length; i++){
-                var p = confettiPieces[i];
-                p.y += p.vy;
-                p.x += p.vx;
-                p.rot += p.vrot;
-                if (p.y > confettiCanvas.height) { p.y = -20; p.x = Math.random() * confettiCanvas.width; }
-                confettiCtx.save();
-                confettiCtx.translate(p.x, p.y);
-                confettiCtx.rotate(p.rot * Math.PI / 180);
-                confettiCtx.fillStyle = p.color;
-                confettiCtx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
-                confettiCtx.restore();
-            }
-            confettiAnim = requestAnimationFrame(animateConfetti);
-        }
-
-        function stopConfetti(){
-            if (confettiAnim){ cancelAnimationFrame(confettiAnim); confettiAnim = null; }
-            if (confettiCtx) confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
-        }
-
-        window.addEventListener('resize', function(){
-            if (confettiCanvas){
-                confettiCanvas.width  = window.innerWidth;
-                confettiCanvas.height = window.innerHeight;
-            }
-        });
+            // --- Press ripple on the stamp button (visual only, does not block submit) ---
+            $(".stamp-btn").on('click', function(){
+                $(this).addClass('is-pressed');
+            });
+        })();
     </script>
   </body>
 </html>
